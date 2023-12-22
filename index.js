@@ -1,5 +1,5 @@
 import fs from "node:fs/promises";
-
+import fsNormal from "fs";
 async function writeSQL(statement, saveFileAs = "") {
 	try {
 		const destinationFile = process.argv[2] || saveFileAs;
@@ -20,6 +20,15 @@ async function readCSV(csvFileName = "") {
 
 		if (!fileAndTableName) {
 			throw new Error("Missing csvFileName parameter");
+		}
+
+		// inspecting weather csv dir exist or not 
+		if(!fsNormal.existsSync(__dirname + "/csv")){
+            throw new Error("Missing csv folder!");
+		}
+
+		if(!fsNormal.existsSync(__dirname + `/csv/${fileAndTableName}.csv`)){
+			throw new Error(`The ${fileAndTableName} does not exists!`)
 		}
 
 		const data = await fs.readFile(`csv/${fileAndTableName}.csv`, { encoding: "utf8" });
